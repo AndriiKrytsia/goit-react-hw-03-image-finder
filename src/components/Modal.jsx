@@ -12,9 +12,12 @@ export class Modal extends Component {
       this.props.handelCloseModal();
     }
   };
+
   componentDidMount() {
-    document.addEventListener('mousedown', this.handleBackdropClose);
     document.addEventListener('keydown', this.handleEscapeClose);
+  }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleEscapeClose);
   }
 
   render() {

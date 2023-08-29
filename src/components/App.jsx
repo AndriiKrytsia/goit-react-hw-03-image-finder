@@ -4,6 +4,7 @@ import { Searchbar } from './Searchbar';
 import axios from 'axios';
 import { Button } from './Button';
 import { Modal } from './Modal';
+import { Loader } from './Loader';
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 axios.defaults.params = {
@@ -21,6 +22,7 @@ export class App extends Component {
     page: 1,
     isModalOpen: false,
     modalImage: null,
+    isShowBtn: false,
   };
 
   handelOpenModal = imageBig => {
@@ -54,6 +56,9 @@ export class App extends Component {
             prevState.page > 1
               ? [...prevState.images, ...response.data.hits]
               : response.data.hits,
+          isShowBtn:
+            response.data.totalHits > 0 &&
+            Math.ceil(response.data.totalHits / 12) > this.state.page,
         }));
       } catch (error) {
         this.setState({ isError: true });
@@ -72,9 +77,10 @@ export class App extends Component {
       page,
       isModalOpen,
       modalImage,
+      isShowBtn,
     } = this.state;
     return (
-      <div>
+      <div className="App">
         <Searchbar onChangeSearch={this.handleSearchValue} />
         <ImageGallery imageArr={images} onModalClick={this.handelOpenModal} />
         {isModalOpen && (
@@ -83,7 +89,8 @@ export class App extends Component {
             handelCloseModal={this.handelCloseModal}
           />
         )}
-        <Button onClickLoadMore={this.handelPageUpdate} />
+        {isShowBtn && <Button onClickLoadMore={this.handelPageUpdate} />}
+        {isLoader && <Loader />}
       </div>
     );
   }

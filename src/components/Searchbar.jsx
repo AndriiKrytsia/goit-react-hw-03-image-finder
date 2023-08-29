@@ -11,8 +11,6 @@ export class Searchbar extends Component {
 
   handelFormBtn = e => {
     e.preventDefault();
-
-    console.log(this.state.inputValue);
     this.props.onChangeSearch(this.state.inputValue);
     this.setState({ inputValue: '' });
   };
@@ -20,15 +18,15 @@ export class Searchbar extends Component {
   render() {
     return (
       <header className="Searchbar">
-        <form onSubmit={this.handelFormBtn} className="form">
-          <button type="submit" className="Button">
-            <span className="button-label">Search</span>
+        <form onSubmit={this.handelFormBtn} className="SearchForm">
+          <button type="submit" className="SearchForm-button">
+            <span className="SearchForm-button-label">Search</span>
           </button>
 
           <input
             value={this.state.inputValue}
             onChange={this.handleSearchChange}
-            className="input"
+            className="SearchForm-input"
             type="text"
             autoComplete="off"
             autoFocus
