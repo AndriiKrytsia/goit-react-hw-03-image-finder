@@ -69,16 +69,7 @@ export class App extends Component {
   }
 
   render() {
-    const {
-      images,
-      searchValue,
-      isError,
-      isLoader,
-      page,
-      isModalOpen,
-      modalImage,
-      isShowBtn,
-    } = this.state;
+    const { images, isLoader, isModalOpen, modalImage, isShowBtn } = this.state;
     return (
       <div className="App">
         <Searchbar onChangeSearch={this.handleSearchValue} />
