@@ -1,18 +1,11 @@
 import { Component } from 'react';
 import { ImageGallery } from './ImageGallery';
 import { Searchbar } from './Searchbar';
-import axios from 'axios';
+import { getImages } from '../helpers/imageApi';
 import { Button } from './Button';
 import { Modal } from './Modal';
 import { Loader } from './Loader';
 
-axios.defaults.baseURL = 'https://pixabay.com/api/';
-axios.defaults.params = {
-  key: '38627357-1628736c94afded4ff66c6ede',
-  image_type: 'photo',
-  orientation: 'horizontal',
-  per_page: 12,
-};
 export class App extends Component {
   state = {
     images: [],
@@ -37,8 +30,16 @@ export class App extends Component {
   };
 
   handleSearchValue = searchValue => {
-    this.setState({ searchValue });
-    this.setState({ page: 1 });
+    this.setState({
+      searchValue,
+      page: 1,
+      images: [],
+      isError: false,
+      isLoader: false,
+      isModalOpen: false,
+      modalImage: null,
+      isShowBtn: false,
+    });
   };
 
   async componentDidUpdate(_, prevState) {
@@ -48,17 +49,16 @@ export class App extends Component {
     ) {
       try {
         this.setState({ isLoader: true });
-        const response = await axios.get('', {
-          params: { q: this.state.searchValue, page: this.state.page },
-        });
+        const responImages = await getImages(
+          this.state.searchValue,
+          this.state.page
+        );
+        if (responImages.totalHits === 0) {
+          return alert('Try now!!!');
+        }
         this.setState(prevState => ({
-          images:
-            prevState.page > 1
-              ? [...prevState.images, ...response.data.hits]
-              : response.data.hits,
-          isShowBtn:
-            response.data.totalHits > 0 &&
-            Math.ceil(response.data.totalHits / 12) > this.state.page,
+          images: [...prevState.images, ...responImages.hits],
+          isShowBtn: Math.ceil(responImages.totalHits / 12) > this.state.page,
         }));
       } catch (error) {
         this.setState({ isError: true });
